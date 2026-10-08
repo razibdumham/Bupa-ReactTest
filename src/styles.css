@@ -30,7 +30,14 @@ h2 {
   margin-bottom: 8px;
   font-size: 24px;
 }
-
+p.alert {
+  margin: 0;
+  grid-column: 1 / -1;
+  padding: 8px;
+  background: #fdd;
+  color: #900;
+  font-weight: 700;
+}
 /* Desktop: two columns, footer spans both */
 main {
   display: grid;

@@ -5,7 +5,7 @@ export default function Section({ books, sectionType, isHardcoverOnly }) {
       : books
     : [];
 
-  const heading = `${isHardcoverOnly ? "Hardcover " : ""}Books owned by ${
+  const heading = `${isHardcoverOnly && visibleBooks.length > 0 ? "Hardcover " : ""}Books owned by ${
     sectionType === "adults" ? "Adults" : "Children"
   }`;
 

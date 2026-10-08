@@ -19,7 +19,8 @@ function App() {
   function getBooksOwnedByChildren(data) {
     return (Array.isArray(data) ? data : [])
       .filter(
-        (person) => person && typeof person.age === "number" && person.age <= 17,
+        (person) =>
+          person && typeof person.age === "number" && person.age <= 17,
       )
       .flatMap((person) => (Array.isArray(person.books) ? person.books : []));
   }
@@ -37,7 +38,7 @@ function App() {
       <Header />
       <main>
         {loading && <p aria-live="polite">Loading books...</p>}
-        {error && <p role="alert">{error}</p>}
+        {error && <p className="alert">{error}</p>}
         {!loading && !error && (
           <Section
             books={getBooksOwnedByAdults(books)}
