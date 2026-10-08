@@ -1,19 +1,87 @@
-# React + Vite
+# Owners and Books
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive React application that retrieves book owners from the Bupa book API and displays their books in adult and children sections. Users can show every book or filter both sections to hardcover books.
 
-Currently, two official plugins are available:
+## Screenshots
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Desktop
 
-## React Compiler
+![Owners and Books desktop layout](public/assets/desktop-view.png)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Mobile
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+![Owners and Books mobile layout](public/assets/mobile-view.png)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Fetches book-owner data from `/api/v1/bookowners`.
+- Groups owners by age: adults are older than 17; children are 17 or younger.
+- Displays each group's books in separate sections.
+- **Hardcover only** filters both sections to books whose type is `Hardcover`.
+- **Get Books** clears the hardcover-only filter and displays all books.
+- Shows a loading message while the request is pending and an error message if it fails.
+- Adapts the layout for desktop and mobile screens.
+
+## Requirements
+
+- Node.js and npm
+- Network access to the configured books API when running the app
+
+## Run locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the Vite development server:
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite in your browser. The development server proxies `/api` requests to `https://digitalcodingtest.bupa.com.au`.
+
+To create and preview a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Unit tests
+
+Run the full test suite once:
+
+```bash
+npm test
+```
+
+Run Vitest in watch mode while developing:
+
+```bash
+npm run test:watch
+```
+
+The suite uses Vitest, jsdom, and React Testing Library. It covers the app's loading, error, age-grouping, and filter behavior; the `useBooks` hook's request lifecycle and cancellation; the API helper's HTTP handling and JSON validation; and the footer controls.
+
+## API error handling and JSON validation
+
+The API helper in `src/apiData/books.js` handles responses as follows:
+
+- **HTTP 429 (rate limit):** reads the response body and uses its trimmed text as the error message. If the body is blank, it reports `Too many requests.`
+- **Other unsuccessful HTTP responses:** reports `Request failed: <status>`.
+- **Blank response body:** rejects whitespace-only or empty response text with `The books API returned an empty response. Please try again.` The hook passes this error to the app, which displays it in the UI as an alert instead of showing empty book sections.
+- **Invalid JSON:** reports that the API returned invalid JSON. The original parsing error is retained as the cause.
+- **Unexpected JSON shape:** requires the parsed top-level value to be an array; otherwise it reports an unexpected response.
+- **Record validation:** keeps only owner records that are objects with a numeric `age` and a `books` array. For each valid owner, it keeps only book objects with string `name` and `type` fields. Invalid records are filtered out before rendering.
+
+The `useBooks` hook passes an `AbortSignal` to the fetch request and aborts it when the component using the hook unmounts, preventing stale request results from updating state.
+
+## Useful commands
+
+```bash
+npm run lint
+npm run build
+```
