@@ -1,9 +1,11 @@
 export default function Section({ books, sectionType, isHardcoverOnly }) {
-  const visibleBooks = Array.isArray(books)
-    ? isHardcoverOnly
-      ? books.filter((book) => book && book.type === "Hardcover")
-      : books
-    : [];
+  const visibleBooks = (Array.isArray(books) ? books : [])
+    .filter((book) => !isHardcoverOnly || (book && book.type === "Hardcover"))
+    .sort((first, second) =>
+      (first?.name ?? "").localeCompare(second?.name ?? "", undefined, {
+        sensitivity: "base",
+      }),
+    );
 
   const heading = `${isHardcoverOnly && visibleBooks.length > 0 ? "Hardcover " : ""}Books owned by ${
     sectionType === "adults" ? "Adults" : "Children"

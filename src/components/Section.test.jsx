@@ -1,7 +1,9 @@
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import Section from "./Section.jsx";
+
+afterEach(cleanup);
 
 describe("Section", () => {
   it("renders the books for the section", () => {
@@ -21,6 +23,29 @@ describe("Section", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Book One")).toBeInTheDocument();
     expect(screen.getByText("Book Two")).toBeInTheDocument();
+  });
+
+  it("sorts book names alphabetically without changing the input array", () => {
+    const books = [
+      { name: "Wuthering Heights", type: "Paperback" },
+      { name: "hamlet", type: "Paperback" },
+      { name: "Great Expectations", type: "Hardcover" },
+    ];
+
+    render(
+      <Section books={books} sectionType="adults" isHardcoverOnly={false} />,
+    );
+
+    expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual([
+      "Great Expectations",
+      "hamlet",
+      "Wuthering Heights",
+    ]);
+    expect(books.map((book) => book.name)).toEqual([
+      "Wuthering Heights",
+      "hamlet",
+      "Great Expectations",
+    ]);
   });
 
   it("shows only hardcover books when that filter is active", () => {
