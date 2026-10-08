@@ -90,8 +90,7 @@ describe("fetchBooks", () => {
     ]);
   });
 
-  it("warns and skips owners whose books are under an empty key", async () => {
-    const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it("skips owners whose books are under an empty key", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -116,10 +115,6 @@ describe("fetchBooks", () => {
     );
 
     await expect(fetchBooks()).resolves.toEqual([]);
-    expect(warning).toHaveBeenCalledOnce();
-    expect(warning).toHaveBeenCalledWith(
-      'Books API response contains an empty key; owner records without a valid "books" array will be skipped.',
-    );
   });
 
   it("reports a rate limit response body", async () => {

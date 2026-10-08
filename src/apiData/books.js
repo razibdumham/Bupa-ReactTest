@@ -58,6 +58,7 @@ export async function fetchBooks(signal) {
   let data;
   try {
     data = normalizeKeys(JSON.parse(responseBody));
+    console.log(data);
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
