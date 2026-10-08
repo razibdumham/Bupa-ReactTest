@@ -30,3 +30,18 @@ h2 {
   margin-bottom: 8px;
   font-size: 24px;
 }
+
+/* Desktop: two columns, footer spans both */
+main {
+  display: grid;
+  grid-template-columns: repeat(2, 208px);
+  gap: 24px 32px;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
