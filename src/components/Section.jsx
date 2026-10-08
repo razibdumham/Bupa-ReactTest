@@ -15,7 +15,7 @@ export default function Section({ books, sectionType, isHardcoverOnly }) {
     <section aria-label={heading}>
       <h2>{heading}</h2>
       {visibleBooks.length === 0 ? (
-        <p>No books available for this selection.</p>
+        <p className="info">No books available for this selection.</p>
       ) : (
         <ul>
           {visibleBooks.map((book, index) => (

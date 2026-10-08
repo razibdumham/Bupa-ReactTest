@@ -38,6 +38,13 @@ p.alert {
   color: #900;
   font-weight: 700;
 }
+p.info {
+  background: skyblue;
+  color: #2e2c2c;
+  padding: 8px 8px;
+  border-radius: 1em;
+  font-weight: 700;
+}
 /* Desktop: two columns, footer spans both */
 main {
   display: grid;

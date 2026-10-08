@@ -3,6 +3,7 @@ import { fetchBooks } from "./books.js";
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 function mockResponse({ status = 200, body = "", ok = status < 400 } = {}) {
@@ -87,6 +88,38 @@ describe("fetchBooks", () => {
         books: [{ name: "Great Expectations", type: "Hardcover" }],
       },
     ]);
+  });
+
+  it("warns and skips owners whose books are under an empty key", async () => {
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        mockResponse({
+          body: JSON.stringify([
+            {
+              NAME: "Charles",
+              age: 17,
+              "": [
+                { name: "Little Red Riding Hood", TYPE: "Hardcover" },
+                { name: "The Hobbit", TYPE: "Ebook" },
+              ],
+            },
+            {
+              NAME: "William",
+              age: 15,
+              "": [{ name: "Great Expectations", TYPE: "Hardcover" }],
+            },
+          ]),
+        }),
+      ),
+    );
+
+    await expect(fetchBooks()).resolves.toEqual([]);
+    expect(warning).toHaveBeenCalledOnce();
+    expect(warning).toHaveBeenCalledWith(
+      'Books API response contains an empty key; owner records without a valid "books" array will be skipped.',
+    );
   });
 
   it("reports a rate limit response body", async () => {
