@@ -11,10 +11,10 @@ describe("Footer", () => {
       <Footer
         isHardcoverOnly={false}
         onClickGetAllBooks={vi.fn()}
-        onClickGetHardcoverBooks={vi.fn()}
+        onToggleHardcover={vi.fn()}
       />,
     );
-    const filter = screen.getByRole("link", { name: "Hardcover only" });
+    const filter = screen.getByRole("button", { name: "Hardcover only" });
 
     expect(filter).toHaveAttribute("aria-pressed", "false");
 
@@ -22,27 +22,26 @@ describe("Footer", () => {
       <Footer
         isHardcoverOnly
         onClickGetAllBooks={vi.fn()}
-        onClickGetHardcoverBooks={vi.fn()}
+        onToggleHardcover={vi.fn()}
       />,
     );
 
     expect(filter).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("calls the hardcover filter callback without navigating", () => {
-    const onClickGetHardcoverBooks = vi.fn();
+  it("calls the hardcover toggle callback", () => {
+    const onToggleHardcover = vi.fn();
     render(
       <Footer
         isHardcoverOnly={false}
         onClickGetAllBooks={vi.fn()}
-        onClickGetHardcoverBooks={onClickGetHardcoverBooks}
+        onToggleHardcover={onToggleHardcover}
       />,
     );
 
-    fireEvent.click(screen.getByRole("link", { name: "Hardcover only" }));
+    fireEvent.click(screen.getByRole("button", { name: "Hardcover only" }));
 
-    expect(onClickGetHardcoverBooks).toHaveBeenCalledOnce();
-    expect(window.location.hash).toBe("");
+    expect(onToggleHardcover).toHaveBeenCalledOnce();
   });
 
   it("calls the get-books callback when its button is clicked", () => {
@@ -51,7 +50,7 @@ describe("Footer", () => {
       <Footer
         isHardcoverOnly={false}
         onClickGetAllBooks={onClickGetAllBooks}
-        onClickGetHardcoverBooks={vi.fn()}
+        onToggleHardcover={vi.fn()}
       />,
     );
 

@@ -18,10 +18,11 @@ function App() {
 
   function handleGetAllBooks() {
     setIsHardcoverOnly(false);
+    refetch();
   }
 
-  function handleGetHardcoverBooks() {
-    setIsHardcoverOnly(true);
+  function handleToggleHardcover() {
+    setIsHardcoverOnly((currentValue) => !currentValue);
   }
 
   return (
@@ -30,7 +31,7 @@ function App() {
       <main>
         {loading && <p>Loading books...</p>}
         {error && (
-          <p className="alert">
+          <p className="alert" role="alert">
             {error}{" "}
             <button type="button" onClick={refetch}>
               Retry
@@ -53,7 +54,7 @@ function App() {
           />
         )}
         {warning && !error && (
-          <p className="warning">
+          <p className="warning" role="status">
             {warning}{" "}
             <button type="button" onClick={refetch}>
               Retry
@@ -63,7 +64,7 @@ function App() {
         <Footer
           isHardcoverOnly={isHardcoverOnly}
           onClickGetAllBooks={handleGetAllBooks}
-          onClickGetHardcoverBooks={handleGetHardcoverBooks}
+          onToggleHardcover={handleToggleHardcover}
         />
       </main>
     </>

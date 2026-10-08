@@ -51,6 +51,7 @@ describe("App", () => {
   });
 
   it("groups books into adult and children sections and filters by hardcover", () => {
+    const refetch = vi.fn();
     vi.mocked(useBooks).mockReturnValue({
       books: [
         {
@@ -75,6 +76,7 @@ describe("App", () => {
       loading: false,
       error: "",
       warning: "",
+      refetch,
     });
 
     render(<App />);
@@ -85,7 +87,7 @@ describe("App", () => {
     expect(screen.getByText("Child Hardcover")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("link", { name: "Hardcover only" }));
+    fireEvent.click(screen.getByRole("button", { name: "Hardcover only" }));
 
     expect(screen.getByText("Adult Hardcover")).toBeInTheDocument();
     expect(screen.queryByText("Adult Paperback")).not.toBeInTheDocument();
@@ -95,10 +97,17 @@ describe("App", () => {
       screen.getByRole("heading", { name: "Hardcover Books owned by Adults" }),
     ).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "Hardcover only" }));
+
+    expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
+    expect(screen.getByText("Child Paperback")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Hardcover only" }));
     fireEvent.click(screen.getByRole("button", { name: "Get Books" }));
 
     expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
+    expect(refetch).toHaveBeenCalledOnce();
   });
 
   it("shows a warning and keeps valid book sections visible", () => {

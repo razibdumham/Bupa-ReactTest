@@ -101,6 +101,27 @@ footer > button {
     system-ui,
     sans-serif;
 }
+footer > button.hardcover-filter {
+  padding: 4px 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+footer > button.hardcover-filter:hover {
+  color: #005a96;
+}
+
+footer > button.hardcover-filter[aria-pressed="true"] {
+  color: #666;
+  text-decoration: underline;
+}
+
+footer > button.hardcover-filter:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
 
 /* Mobile: stacked cards, centred footer with button above link */
 @media (max-width: 600px) {
