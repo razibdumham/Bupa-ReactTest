@@ -74,42 +74,17 @@ describe("fetchBooks", () => {
 
     await expect(fetchBooks()).resolves.toEqual([
       {
-        NAME: "Charles",
-        AGE: 17,
-        BOOKS: [
-          { NAME: "Little Red Riding Hood", TYPE: "Hardcover" },
-          { NAME: "The Hobbit", TYPE: "Ebook" },
-        ],
         name: "Charles",
         age: 17,
         books: [
-          {
-            NAME: "Little Red Riding Hood",
-            TYPE: "Hardcover",
-            name: "Little Red Riding Hood",
-            type: "Hardcover",
-          },
-          {
-            NAME: "The Hobbit",
-            TYPE: "Ebook",
-            name: "The Hobbit",
-            type: "Ebook",
-          },
+          { name: "Little Red Riding Hood", type: "Hardcover" },
+          { name: "The Hobbit", type: "Ebook" },
         ],
       },
       {
         name: "William",
-        Age: 15,
-        bOoKs: [{ nAmE: "Great Expectations", tYpE: "Hardcover" }],
         age: 15,
-        books: [
-          {
-            nAmE: "Great Expectations",
-            tYpE: "Hardcover",
-            name: "Great Expectations",
-            type: "Hardcover",
-          },
-        ],
+        books: [{ name: "Great Expectations", type: "Hardcover" }],
       },
     ]);
   });

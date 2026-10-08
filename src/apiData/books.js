@@ -1,17 +1,26 @@
-function getPropertyIgnoreCase(object, propertyName) {
-  const key = Object.keys(object).find(
-    (candidate) => candidate.toLowerCase() === propertyName.toLowerCase(),
-  );
+function normalizeKeys(value) {
+  if (Array.isArray(value)) {
+    return value.map(normalizeKeys);
+  }
 
-  return key === undefined ? undefined : object[key];
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [
+        key.toLowerCase(),
+        normalizeKeys(nestedValue),
+      ]),
+    );
+  }
+
+  return value;
 }
 
 function isValidBook(book) {
   return (
     book &&
     typeof book === "object" &&
-    typeof getPropertyIgnoreCase(book, "name") === "string" &&
-    typeof getPropertyIgnoreCase(book, "type") === "string"
+    typeof book.name === "string" &&
+    typeof book.type === "string"
   );
 }
 
@@ -19,8 +28,8 @@ function isValidPerson(person) {
   return (
     person &&
     typeof person === "object" &&
-    typeof getPropertyIgnoreCase(person, "age") === "number" &&
-    Array.isArray(getPropertyIgnoreCase(person, "books"))
+    typeof person.age === "number" &&
+    Array.isArray(person.books)
   );
 }
 
@@ -48,7 +57,7 @@ export async function fetchBooks(signal) {
 
   let data;
   try {
-    data = JSON.parse(responseBody);
+    data = normalizeKeys(JSON.parse(responseBody));
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
@@ -66,14 +75,6 @@ export async function fetchBooks(signal) {
 
   return data.filter(isValidPerson).map((person) => ({
     ...person,
-    age: getPropertyIgnoreCase(person, "age"),
-    name: getPropertyIgnoreCase(person, "name"),
-    books: getPropertyIgnoreCase(person, "books")
-      .filter(isValidBook)
-      .map((book) => ({
-        ...book,
-        name: getPropertyIgnoreCase(book, "name"),
-        type: getPropertyIgnoreCase(book, "type"),
-      })),
+    books: person.books.filter(isValidBook),
   }));
 }
