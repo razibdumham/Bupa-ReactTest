@@ -1,14 +1,18 @@
-export default function Section() {
+export default function Section({ books, sectionType, isHardcoverOnly }) {
+  const visibleBooks = isHardcoverOnly
+    ? books.filter((book) => book.type === "Hardcover")
+    : books;
+
   return (
     <section>
-      <h2>Books owned by Adults</h2>
+      <h2>
+        {isHardcoverOnly ? "Hardcover " : ""} Books owned by{" "}
+        {sectionType === "adults" ? "Adults" : "Children"}
+      </h2>
       <ul>
-        <li>Great Expectations</li>
-        <li>Gulliver's Travels</li>
-        <li>Hamlet</li>
-        <li>Jane Eyre</li>
-        <li>React: The Ultimate Guide</li>
-        <li>Wuthering Heights</li>
+        {visibleBooks.map((book) => (
+          <li key={book.name}>{book.name}</li>
+        ))}
       </ul>
     </section>
   );

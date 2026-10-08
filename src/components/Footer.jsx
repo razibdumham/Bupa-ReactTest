@@ -1,8 +1,13 @@
-export default function Footer() {
+export default function Footer({
+  onClickGetAllBooks,
+  onClickGetHardcoverBooks,
+}) {
   return (
     <footer>
-      <a href="#">Hardcover only</a>
-      <button>Get Books</button>
+      <a href="#" onClick={onClickGetHardcoverBooks}>
+        Hardcover only
+      </a>
+      <button onClick={onClickGetAllBooks}>Get Books</button>
     </footer>
   );
 }

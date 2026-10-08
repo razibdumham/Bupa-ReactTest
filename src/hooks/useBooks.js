@@ -3,7 +3,7 @@ import { fetchBooks } from "../apiData/books.js";
 
 export function useBooks() {
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
