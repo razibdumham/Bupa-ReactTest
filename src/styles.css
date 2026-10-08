@@ -1,0 +1,101 @@
+/* CSS Document --Default blue color code given*/
+:root {
+  --blue: #0079c8;
+}
+
+/* Reset default styles for the body where main 2 sections including footer is included */
+body {
+  margin: 0;
+  font:
+    14px/1.25 Inter,
+    system-ui,
+    sans-serif;
+}
+
+/* Style for the heaader and sub-header */
+h1,
+h2 {
+  margin: 0;
+  background: var(--blue);
+  color: #fff;
+  text-align: center;
+}
+
+h1 {
+  padding: 12px;
+  font-size: 24px;
+}
+h2 {
+  padding: 16px 8px;
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+/* Desktop: two columns, footer spans both */
+main {
+  display: grid;
+  grid-template-columns: repeat(2, 208px);
+  gap: 24px 32px;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Style for the footer section where the button is included */
+footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #aaa;
+}
+
+a {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  font:
+    700 12px Inter,
+    system-ui,
+    sans-serif;
+}
+
+/* Mobile: stacked cards, centred footer with button above link */
+@media (max-width: 600px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  section {
+    padding: 8px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 #333;
+  }
+
+  footer {
+    flex-direction: column-reverse;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  button {
+    padding: 10px 56px;
+  }
+}

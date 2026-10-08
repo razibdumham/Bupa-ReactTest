@@ -1,8 +1,16 @@
+import Footer from "./components/Footer.jsx";
+import Header from "./components/Header.jsx";
+import Section from "./components/Section.jsx";
 function App() {
   return (
-    <div>
-      <h1>Owners and Books</h1>
-    </div>
+    <>
+      <Header />
+      <main>
+        <Section />
+        <Section />
+        <Footer />
+      </main>
+    </>
   );
 }
 
