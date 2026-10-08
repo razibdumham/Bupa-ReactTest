@@ -6,7 +6,7 @@ import { useBooks } from "./hooks/useBooks.js";
 
 function App() {
   const [isHardcoverOnly, setIsHardcoverOnly] = useState(false);
-  const { books, loading, error } = useBooks();
+  const { books, loading, error, refetch } = useBooks();
 
   function getBooksOwnedByAdults(data) {
     return (Array.isArray(data) ? data : [])
@@ -27,6 +27,7 @@ function App() {
 
   function handleGetAllBooks() {
     setIsHardcoverOnly(false);
+    refetch();
   }
 
   function handleGetHardcoverBooks() {
@@ -38,7 +39,11 @@ function App() {
       <Header />
       <main>
         {loading && <p aria-live="polite">Loading books...</p>}
-        {error && <p className="alert">{error}</p>}
+        {error && (
+          <p className="alert" role="alert">
+            {error}
+          </p>
+        )}
         {!loading && !error && (
           <Section
             books={getBooksOwnedByAdults(books)}

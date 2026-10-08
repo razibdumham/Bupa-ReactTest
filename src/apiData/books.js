@@ -17,7 +17,7 @@ function isValidPerson(person) {
 }
 
 export async function fetchBooks(signal) {
-  const response = await fetch(`api/v1/bookowners`, {
+  const response = await fetch("/api/v1/bookowners", {
     signal,
   });
 

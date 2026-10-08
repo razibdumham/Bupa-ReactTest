@@ -19,14 +19,51 @@ describe("useBooks", () => {
 
     const { result } = renderHook(() => useBooks());
 
-    expect(result.current).toEqual({ books: [], loading: true, error: "" });
+    expect(result.current).toMatchObject({
+      books: [],
+      loading: true,
+      error: "",
+    });
 
     await waitFor(() => {
-      expect(result.current).toEqual({ books, loading: false, error: "" });
+      expect(result.current).toMatchObject({ books, loading: false, error: "" });
     });
 
     expect(fetchBooks).toHaveBeenCalledOnce();
     expect(fetchBooks.mock.calls[0][0]).toBeInstanceOf(AbortSignal);
+    expect(result.current.refetch).toEqual(expect.any(Function));
+  });
+
+  it("fetches fresh books when refetch is called", async () => {
+    const initialBooks = [{ age: 25, books: [{ name: "Old", type: "Book" }] }];
+    const refreshedBooks = [
+      { age: 25, books: [{ name: "Fresh", type: "Book" }] },
+    ];
+    vi.mocked(fetchBooks)
+      .mockResolvedValueOnce(initialBooks)
+      .mockResolvedValueOnce(refreshedBooks);
+
+    const { result } = renderHook(() => useBooks());
+
+    await waitFor(() => {
+      expect(result.current.books).toEqual(initialBooks);
+    });
+
+    act(() => {
+      result.current.refetch();
+    });
+
+    expect(result.current.loading).toBe(true);
+
+    await waitFor(() => {
+      expect(result.current).toMatchObject({
+        books: refreshedBooks,
+        loading: false,
+        error: "",
+      });
+    });
+
+    expect(fetchBooks).toHaveBeenCalledTimes(2);
   });
 
   it("exposes a request error and finishes loading", async () => {
@@ -35,7 +72,7 @@ describe("useBooks", () => {
     const { result } = renderHook(() => useBooks());
 
     await waitFor(() => {
-      expect(result.current).toEqual({
+      expect(result.current).toMatchObject({
         books: [],
         loading: false,
         error: "Service unavailable",
@@ -76,6 +113,6 @@ describe("useBooks", () => {
       rejectRequest(new Error("Request aborted"));
     });
 
-    expect(result.current).toEqual({ books: [], loading: true, error: "" });
+    expect(result.current).toMatchObject({ books: [], loading: true, error: "" });
   });
 });
