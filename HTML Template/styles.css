@@ -45,3 +45,32 @@ ul {
   padding: 0;
   list-style: none;
 }
+
+/* Style for the footer section where the button is included */
+footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #aaa;
+}
+
+a {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+button {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  font:
+    700 12px Inter,
+    system-ui,
+    sans-serif;
+}
