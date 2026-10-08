@@ -15,18 +15,50 @@ afterEach(() => {
 describe("useBooks", () => {
   it("starts loading and stores books after a successful request", async () => {
     const books = [{ age: 25, books: [{ name: "Novel", type: "Hardcover" }] }];
-    vi.mocked(fetchBooks).mockResolvedValue(books);
+    vi.mocked(fetchBooks).mockResolvedValue({ books, warning: "" });
 
     const { result } = renderHook(() => useBooks());
 
-    expect(result.current).toEqual({ books: [], loading: true, error: "" });
+    expect(result.current).toMatchObject({
+      books: [],
+      loading: true,
+      error: "",
+      warning: "",
+    });
 
     await waitFor(() => {
-      expect(result.current).toEqual({ books, loading: false, error: "" });
+      expect(result.current).toMatchObject({
+        books,
+        loading: false,
+        error: "",
+        warning: "",
+      });
     });
 
     expect(fetchBooks).toHaveBeenCalledOnce();
     expect(fetchBooks.mock.calls[0][0]).toBeInstanceOf(AbortSignal);
+  });
+
+  it("fetches the books again when refetch is called", async () => {
+    const books = [{ age: 25, books: [{ name: "Novel", type: "Hardcover" }] }];
+    vi.mocked(fetchBooks).mockResolvedValue({ books, warning: "" });
+
+    const { result } = renderHook(() => useBooks());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    act(() => {
+      result.current.refetch();
+    });
+
+    expect(result.current.loading).toBe(true);
+
+    await waitFor(() => {
+      expect(fetchBooks).toHaveBeenCalledTimes(2);
+      expect(result.current.loading).toBe(false);
+    });
   });
 
   it("exposes a request error and finishes loading", async () => {
@@ -35,10 +67,11 @@ describe("useBooks", () => {
     const { result } = renderHook(() => useBooks());
 
     await waitFor(() => {
-      expect(result.current).toEqual({
+      expect(result.current).toMatchObject({
         books: [],
         loading: false,
         error: "Service unavailable",
+        warning: "",
       });
     });
   });
@@ -76,6 +109,11 @@ describe("useBooks", () => {
       rejectRequest(new Error("Request aborted"));
     });
 
-    expect(result.current).toEqual({ books: [], loading: true, error: "" });
+    expect(result.current).toMatchObject({
+      books: [],
+      loading: true,
+      error: "",
+      warning: "",
+    });
   });
 });

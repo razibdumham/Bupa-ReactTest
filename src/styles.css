@@ -39,12 +39,22 @@ p.alert {
   font-weight: 700;
 }
 p.info {
-  background: skyblue;
-  color: #2e2c2c;
-  padding: 8px 8px;
-  border-radius: 1em;
-  font-weight: 700;
+  background: #f3f4f6;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #374151;
 }
+p.warning {
+  grid-column: 1 / -1;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 4px;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
 /* Desktop: two columns, footer spans both */
 main {
   display: grid;
@@ -75,8 +85,11 @@ a {
   color: var(--blue);
   font-weight: 700;
 }
-
-button {
+p > button {
+  cursor: pointer;
+  margin: 6px;
+}
+footer > button {
   padding: 8px 14px;
   border: 0;
   border-radius: 6px;

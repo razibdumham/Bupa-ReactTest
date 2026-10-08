@@ -6,7 +6,7 @@ import { useBooks } from "./hooks/useBooks.js";
 
 function App() {
   const [isHardcoverOnly, setIsHardcoverOnly] = useState(false);
-  const { books, loading, error } = useBooks();
+  const { books, loading, error, warning, refetch } = useBooks();
 
   function getBooksOwnedByAdults(data) {
     return (Array.isArray(data) ? data : [])
@@ -40,9 +40,13 @@ function App() {
         {loading && <p aria-live="polite">Loading books...</p>}
         {error && (
           <p className="alert" role="alert">
-            {error}
+            {error}{" "}
+            <button type="button" onClick={refetch}>
+              Retry
+            </button>
           </p>
         )}
+
         {!loading && !error && (
           <Section
             books={getBooksOwnedByAdults(books)}
@@ -56,6 +60,11 @@ function App() {
             sectionType="children"
             isHardcoverOnly={isHardcoverOnly}
           />
+        )}
+        {warning && !error && (
+          <p className="warning" role="status">
+            {warning}
+          </p>
         )}
         <Footer
           isHardcoverOnly={isHardcoverOnly}

@@ -1,6 +1,11 @@
 export default function Section({ books, sectionType, isHardcoverOnly }) {
   const visibleBooks = (Array.isArray(books) ? books : [])
-    .filter((book) => !isHardcoverOnly || (book && book.type === "Hardcover"))
+    .filter(
+      (book) =>
+        !isHardcoverOnly ||
+        (typeof book?.type === "string" &&
+          book.type.toLowerCase() === "hardcover"),
+    )
     .sort((first, second) =>
       (first?.name ?? "").localeCompare(second?.name ?? "", undefined, {
         sensitivity: "base",

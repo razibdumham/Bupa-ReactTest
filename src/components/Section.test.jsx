@@ -53,6 +53,8 @@ describe("Section", () => {
       <Section
         books={[
           { name: "Hardcover Book", type: "Hardcover" },
+          { name: "Uppercase Hardcover Book", type: "HARDCOVER" },
+          { name: "Lowercase Hardcover Book", type: "hardcover" },
           { name: "Paperback Book", type: "Paperback" },
         ]}
         sectionType="children"
@@ -61,6 +63,8 @@ describe("Section", () => {
     );
 
     expect(screen.getByText("Hardcover Book")).toBeInTheDocument();
+    expect(screen.getByText("Uppercase Hardcover Book")).toBeInTheDocument();
+    expect(screen.getByText("Lowercase Hardcover Book")).toBeInTheDocument();
     expect(screen.queryByText("Paperback Book")).not.toBeInTheDocument();
   });
 

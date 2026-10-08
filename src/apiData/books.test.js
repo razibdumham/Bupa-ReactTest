@@ -35,13 +35,16 @@ describe("fetchBooks", () => {
     vi.stubGlobal("fetch", fetchMock);
     const controller = new AbortController();
 
-    await expect(fetchBooks(controller.signal)).resolves.toEqual([
-      {
-        age: 30,
-        name: "Alex",
-        books: [{ name: "Valid book", type: "Hardcover" }],
-      },
-    ]);
+    await expect(fetchBooks(controller.signal)).resolves.toEqual({
+      books: [
+        {
+          age: 30,
+          name: "Alex",
+          books: [{ name: "Valid book", type: "Hardcover" }],
+        },
+      ],
+      warning: "",
+    });
     expect(fetchMock).toHaveBeenCalledWith("/api/v1/bookowners", {
       signal: controller.signal,
     });
@@ -73,24 +76,27 @@ describe("fetchBooks", () => {
       ),
     );
 
-    await expect(fetchBooks()).resolves.toEqual([
-      {
-        name: "Charles",
-        age: 17,
-        books: [
-          { name: "Little Red Riding Hood", type: "Hardcover" },
-          { name: "The Hobbit", type: "Ebook" },
-        ],
-      },
-      {
-        name: "William",
-        age: 15,
-        books: [{ name: "Great Expectations", type: "Hardcover" }],
-      },
-    ]);
+    await expect(fetchBooks()).resolves.toEqual({
+      books: [
+        {
+          name: "Charles",
+          age: 17,
+          books: [
+            { name: "Little Red Riding Hood", type: "Hardcover" },
+            { name: "The Hobbit", type: "Ebook" },
+          ],
+        },
+        {
+          name: "William",
+          age: 15,
+          books: [{ name: "Great Expectations", type: "Hardcover" }],
+        },
+      ],
+      warning: "",
+    });
   });
 
-  it("skips owners whose books are under an empty key", async () => {
+  it("returns a warning and skips owners whose books are under an empty key", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -114,27 +120,31 @@ describe("fetchBooks", () => {
       ),
     );
 
-    await expect(fetchBooks()).resolves.toEqual([]);
+    await expect(fetchBooks()).resolves.toEqual({
+      books: [],
+      warning:
+        "Some book owners were skipped because their books data is missing or invalid.",
+    });
   });
 
-  it("reports a rate limit response body", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(
-        mockResponse({ status: 429, ok: false, body: "Try again later" }),
-      ),
+  it("reports a rate limit error without automatically retrying", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      mockResponse({ status: 429, ok: false, body: "Try again later" }),
     );
+    vi.stubGlobal("fetch", fetchMock);
 
     await expect(fetchBooks()).rejects.toThrow("Try again later");
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
-  it("uses a fallback message when the rate limit response is empty", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(mockResponse({ status: 429, ok: false })),
-    );
+  it("reports an empty response without automatically retrying", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(mockResponse());
+    vi.stubGlobal("fetch", fetchMock);
 
-    await expect(fetchBooks()).rejects.toThrow("Too many requests.");
+    await expect(fetchBooks()).rejects.toThrow(
+      "The books API returned an empty response.",
+    );
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
   it("reports other unsuccessful HTTP responses", async () => {
@@ -149,11 +159,6 @@ describe("fetchBooks", () => {
   });
 
   it("rejects empty and invalid JSON responses", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(mockResponse()));
-    await expect(fetchBooks()).rejects.toThrow(
-      "The books API returned an empty response.",
-    );
-
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(mockResponse({ body: "{invalid json" })),

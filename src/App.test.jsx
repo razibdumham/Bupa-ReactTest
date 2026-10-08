@@ -19,6 +19,7 @@ describe("App", () => {
       books: [],
       loading: true,
       error: "",
+      warning: "",
     });
 
     render(<App />);
@@ -30,21 +31,27 @@ describe("App", () => {
   });
 
   it("shows an error instead of the book sections when loading fails", () => {
+    const refetch = vi.fn();
     vi.mocked(useBooks).mockReturnValue({
       books: [],
       loading: false,
       error: "Could not load books.",
+      warning: "",
+      refetch,
     });
 
     render(<App />);
 
     expect(screen.getByRole("alert")).toHaveTextContent("Could not load books.");
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    expect(refetch).toHaveBeenCalledOnce();
     expect(
       screen.queryByRole("heading", { name: "Books owned by Adults" }),
     ).not.toBeInTheDocument();
   });
 
   it("groups books into adult and children sections and filters by hardcover", () => {
+    const refetch = vi.fn();
     vi.mocked(useBooks).mockReturnValue({
       books: [
         {
@@ -64,6 +71,8 @@ describe("App", () => {
       ],
       loading: false,
       error: "",
+      warning: "",
+      refetch,
     });
 
     render(<App />);
@@ -87,5 +96,23 @@ describe("App", () => {
 
     expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
+    expect(refetch).toHaveBeenCalledOnce();
+  });
+
+  it("shows a warning and keeps valid book sections visible", () => {
+    vi.mocked(useBooks).mockReturnValue({
+      books: [{ age: 17, books: [{ name: "Valid book", type: "Hardcover" }] }],
+      loading: false,
+      error: "",
+      warning:
+        "Some book owners were skipped because their books data is missing or invalid.",
+    });
+
+    render(<App />);
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Some book owners were skipped because their books data is missing or invalid.",
+    );
+    expect(screen.getByText("Valid book")).toBeInTheDocument();
   });
 });

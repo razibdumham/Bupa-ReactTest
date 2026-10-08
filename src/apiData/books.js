@@ -34,13 +34,10 @@ function isValidPerson(person) {
 }
 
 export async function fetchBooks(signal) {
-  const response = await fetch("/api/v1/bookowners", {
-    signal,
-  });
+  const response = await fetch("/api/v1/bookowners", { signal });
 
   if (response.status === 429) {
-    const responseBody = (await response.text()).trim();
-    throw new Error(responseBody || "Too many requests.");
+    throw new Error("Rate limit applied. Please retry after 2 seconds");
   }
 
   if (!response.ok) {
@@ -58,7 +55,6 @@ export async function fetchBooks(signal) {
   let data;
   try {
     data = normalizeKeys(JSON.parse(responseBody));
-    console.log(data);
   } catch (error) {
     if (error instanceof SyntaxError) {
       throw new Error(
@@ -74,8 +70,21 @@ export async function fetchBooks(signal) {
     throw new Error("The API returned an unexpected response.");
   }
 
-  return data.filter(isValidPerson).map((person) => ({
-    ...person,
-    books: person.books.filter(isValidBook),
-  }));
+  const hasOwnersWithoutBooks = data.some(
+    (person) =>
+      person &&
+      typeof person === "object" &&
+      typeof person.age === "number" &&
+      !Array.isArray(person.books),
+  );
+
+  return {
+    books: data.filter(isValidPerson).map((person) => ({
+      ...person,
+      books: person.books.filter(isValidBook),
+    })),
+    warning: hasOwnersWithoutBooks
+      ? "Some book owners were skipped because their books data is missing or invalid."
+      : "",
+  };
 }
