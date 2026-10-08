@@ -1,4 +1,3 @@
-const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
 function isValidBook(book) {
   return (
     book &&
@@ -18,7 +17,7 @@ function isValidPerson(person) {
 }
 
 export async function fetchBooks(signal) {
-  const response = await fetch(`${baseUrl}/bookowners`, {
+  const response = await fetch(`api/v1/bookowners`, {
     signal,
   });
 
