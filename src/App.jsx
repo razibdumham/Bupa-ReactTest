@@ -4,26 +4,17 @@ import Header from "./components/Header.jsx";
 import Section from "./components/Section.jsx";
 import { useBooks } from "./hooks/useBooks.js";
 
+const ADULT_AGE = 18;
+
+function getBooksOwnedByAgeGroup(owners, isAdult) {
+  return owners
+    .filter(({ age }) => (isAdult ? age >= ADULT_AGE : age < ADULT_AGE))
+    .flatMap(({ books }) => books);
+}
+
 function App() {
   const [isHardcoverOnly, setIsHardcoverOnly] = useState(false);
   const { books, loading, error, warning, refetch } = useBooks();
-
-  function getBooksOwnedByAdults(data) {
-    return (Array.isArray(data) ? data : [])
-      .filter(
-        (person) => person && typeof person.age === "number" && person.age > 17,
-      )
-      .flatMap((person) => (Array.isArray(person.books) ? person.books : []));
-  }
-
-  function getBooksOwnedByChildren(data) {
-    return (Array.isArray(data) ? data : [])
-      .filter(
-        (person) =>
-          person && typeof person.age === "number" && person.age <= 17,
-      )
-      .flatMap((person) => (Array.isArray(person.books) ? person.books : []));
-  }
 
   function handleGetAllBooks() {
     setIsHardcoverOnly(false);
@@ -49,14 +40,14 @@ function App() {
 
         {!loading && !error && (
           <Section
-            books={getBooksOwnedByAdults(books)}
+            books={getBooksOwnedByAgeGroup(books, true)}
             sectionType="adults"
             isHardcoverOnly={isHardcoverOnly}
           />
         )}
         {!loading && !error && (
           <Section
-            books={getBooksOwnedByChildren(books)}
+            books={getBooksOwnedByAgeGroup(books, false)}
             sectionType="children"
             isHardcoverOnly={isHardcoverOnly}
           />

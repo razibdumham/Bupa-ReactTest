@@ -1,29 +1,23 @@
 export default function Section({ books, sectionType, isHardcoverOnly }) {
+  const filteredBooks = isHardcoverOnly
+    ? books.filter((book) => book.type.toLowerCase() === "hardcover")
+    : books;
+
   const visibleBooks = [];
   const seenBookNames = new Set();
 
-  for (const book of Array.isArray(books) ? books : []) {
-    const isHardcover =
-      typeof book?.type === "string" &&
-      book.type.toLowerCase() === "hardcover";
-    if (isHardcoverOnly && !isHardcover) {
+  for (const book of filteredBooks) {
+    const normalizedName = book.name.trim().toLowerCase();
+    if (seenBookNames.has(normalizedName)) {
       continue;
     }
 
-    const normalizedName =
-      typeof book?.name === "string" ? book.name.trim().toLowerCase() : "";
-    if (normalizedName && seenBookNames.has(normalizedName)) {
-      continue;
-    }
-
-    if (normalizedName) {
-      seenBookNames.add(normalizedName);
-    }
+    seenBookNames.add(normalizedName);
     visibleBooks.push(book);
   }
 
   visibleBooks.sort((first, second) =>
-    (first?.name ?? "").localeCompare(second?.name ?? "", undefined, {
+    first.name.localeCompare(second.name, undefined, {
       sensitivity: "base",
     }),
   );
@@ -39,10 +33,8 @@ export default function Section({ books, sectionType, isHardcoverOnly }) {
         <p className="info">No books available for this selection.</p>
       ) : (
         <ul>
-          {visibleBooks.map((book, index) => (
-            <li key={`${book?.name ?? "book"}-${index}`}>
-              {book?.name ?? "Unnamed book"}
-            </li>
+          {visibleBooks.map((book) => (
+            <li key={book.name.trim().toLowerCase()}>{book.name}</li>
           ))}
         </ul>
       )}

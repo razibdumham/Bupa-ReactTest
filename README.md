@@ -16,7 +16,7 @@ A responsive React application that retrieves book owners from the Bupa book API
 
 - Book data is fetched when the app loads (or when the page is refreshed). Clicking **Retry** after a request error fetches the data again without reloading the page. Changing the hardcover filter or clicking **Get Books** does not make another API request.
 - **Get Books** clears the hardcover-only filter and displays the already-fetched books in alphabetical order.
-- If multiple books have the same name (ignoring letter case and surrounding spaces), the first one is kept and later duplicates are omitted.
+- Within each age group, if multiple books have the same name (ignoring letter case and surrounding spaces), the first one is kept and later duplicates are omitted.
 - API object keys are normalized to lowercase recursively before validation, so keys such as `AGE`, `BOOKS`, `NAME`, and `TYPE` are accepted.
 - Owner records must include a valid `books` array. If the API provides that array under an empty key (`""`) or omits the key, that owner record and its books are skipped. A warning appears in the UI while valid records continue to display.
 

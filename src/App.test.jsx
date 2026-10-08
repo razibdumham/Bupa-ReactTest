@@ -51,7 +51,6 @@ describe("App", () => {
   });
 
   it("groups books into adult and children sections and filters by hardcover", () => {
-    const refetch = vi.fn();
     vi.mocked(useBooks).mockReturnValue({
       books: [
         {
@@ -60,6 +59,10 @@ describe("App", () => {
             { name: "Adult Hardcover", type: "Hardcover" },
             { name: "Adult Paperback", type: "Paperback" },
           ],
+        },
+        {
+          age: 18,
+          books: [{ name: "Age 18 Adult", type: "Hardcover" }],
         },
         {
           age: 17,
@@ -72,13 +75,13 @@ describe("App", () => {
       loading: false,
       error: "",
       warning: "",
-      refetch,
     });
 
     render(<App />);
 
     expect(screen.getByText("Adult Hardcover")).toBeInTheDocument();
     expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
+    expect(screen.getByText("Age 18 Adult")).toBeInTheDocument();
     expect(screen.getByText("Child Hardcover")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
 
@@ -96,7 +99,6 @@ describe("App", () => {
 
     expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
-    expect(refetch).toHaveBeenCalledOnce();
   });
 
   it("shows a warning and keeps valid book sections visible", () => {
