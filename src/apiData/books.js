@@ -1,9 +1,17 @@
+function getPropertyIgnoreCase(object, propertyName) {
+  const key = Object.keys(object).find(
+    (candidate) => candidate.toLowerCase() === propertyName.toLowerCase(),
+  );
+
+  return key === undefined ? undefined : object[key];
+}
+
 function isValidBook(book) {
   return (
     book &&
     typeof book === "object" &&
-    typeof book.name === "string" &&
-    typeof book.type === "string"
+    typeof getPropertyIgnoreCase(book, "name") === "string" &&
+    typeof getPropertyIgnoreCase(book, "type") === "string"
   );
 }
 
@@ -11,8 +19,8 @@ function isValidPerson(person) {
   return (
     person &&
     typeof person === "object" &&
-    typeof person.age === "number" &&
-    Array.isArray(person.books)
+    typeof getPropertyIgnoreCase(person, "age") === "number" &&
+    Array.isArray(getPropertyIgnoreCase(person, "books"))
   );
 }
 
@@ -58,6 +66,14 @@ export async function fetchBooks(signal) {
 
   return data.filter(isValidPerson).map((person) => ({
     ...person,
-    books: person.books.filter(isValidBook),
+    age: getPropertyIgnoreCase(person, "age"),
+    name: getPropertyIgnoreCase(person, "name"),
+    books: getPropertyIgnoreCase(person, "books")
+      .filter(isValidBook)
+      .map((book) => ({
+        ...book,
+        name: getPropertyIgnoreCase(book, "name"),
+        type: getPropertyIgnoreCase(book, "type"),
+      })),
   }));
 }

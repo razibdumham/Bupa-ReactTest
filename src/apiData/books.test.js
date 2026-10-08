@@ -46,6 +46,74 @@ describe("fetchBooks", () => {
     });
   });
 
+  it("normalizes API field names regardless of capitalization", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        mockResponse({
+          body: JSON.stringify([
+            {
+              NAME: "Charles",
+              AGE: 17,
+              BOOKS: [
+                { NAME: "Little Red Riding Hood", TYPE: "Hardcover" },
+                { NAME: "The Hobbit", TYPE: "Ebook" },
+              ],
+            },
+            {
+              name: "William",
+              Age: 15,
+              bOoKs: [
+                { nAmE: "Great Expectations", tYpE: "Hardcover" },
+              ],
+            },
+          ]),
+        }),
+      ),
+    );
+
+    await expect(fetchBooks()).resolves.toEqual([
+      {
+        NAME: "Charles",
+        AGE: 17,
+        BOOKS: [
+          { NAME: "Little Red Riding Hood", TYPE: "Hardcover" },
+          { NAME: "The Hobbit", TYPE: "Ebook" },
+        ],
+        name: "Charles",
+        age: 17,
+        books: [
+          {
+            NAME: "Little Red Riding Hood",
+            TYPE: "Hardcover",
+            name: "Little Red Riding Hood",
+            type: "Hardcover",
+          },
+          {
+            NAME: "The Hobbit",
+            TYPE: "Ebook",
+            name: "The Hobbit",
+            type: "Ebook",
+          },
+        ],
+      },
+      {
+        name: "William",
+        Age: 15,
+        bOoKs: [{ nAmE: "Great Expectations", tYpE: "Hardcover" }],
+        age: 15,
+        books: [
+          {
+            nAmE: "Great Expectations",
+            tYpE: "Hardcover",
+            name: "Great Expectations",
+            type: "Hardcover",
+          },
+        ],
+      },
+    ]);
+  });
+
   it("reports a rate limit response body", async () => {
     vi.stubGlobal(
       "fetch",

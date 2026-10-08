@@ -93,7 +93,7 @@ button {
     padding: 8px;
     border: 1px solid #000;
     border-radius: 4px;
-    box-shadow: 4px 4px 0 #333;
+    box-shadow: 4px 4px 0 grey;
   }
 
   footer {
