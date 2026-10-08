@@ -1,0 +1,32 @@
+/* CSS Document --Default blue color code given*/
+:root {
+  --blue: #0079c8;
+}
+
+/* Reset default styles for the body where main 2 sections including footer is included */
+body {
+  margin: 0;
+  font:
+    14px/1.25 Inter,
+    system-ui,
+    sans-serif;
+}
+
+/* Style for the heaader and sub-header */
+h1,
+h2 {
+  margin: 0;
+  background: var(--blue);
+  color: #fff;
+  text-align: center;
+}
+
+h1 {
+  padding: 12px;
+  font-size: 24px;
+}
+h2 {
+  padding: 16px 8px;
+  margin-bottom: 8px;
+  font-size: 24px;
+}
