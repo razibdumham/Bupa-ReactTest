@@ -1,7 +1,6 @@
 export default function Footer({
   onClickGetAllBooks,
   onClickGetHardcoverBooks,
-  isHardcoverOnly,
 }) {
   function handleHardcoverClick(event) {
     event.preventDefault();
@@ -10,7 +9,7 @@ export default function Footer({
 
   return (
     <footer>
-      <a href="#" onClick={handleHardcoverClick} aria-pressed={isHardcoverOnly}>
+      <a href="#" onClick={handleHardcoverClick}>
         Hardcover only
       </a>
       <button type="button" onClick={onClickGetAllBooks}>

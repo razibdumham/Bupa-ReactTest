@@ -28,9 +28,9 @@ function App() {
     <>
       <Header />
       <main>
-        {loading && <p aria-live="polite">Loading books...</p>}
+        {loading && <p>Loading books...</p>}
         {error && (
-          <p className="alert" role="alert">
+          <p className="alert">
             {error}{" "}
             <button type="button" onClick={refetch}>
               Retry
@@ -53,7 +53,7 @@ function App() {
           />
         )}
         {warning && !error && (
-          <p className="warning" role="status">
+          <p className="warning">
             {warning}{" "}
             <button type="button" onClick={refetch}>
               Retry

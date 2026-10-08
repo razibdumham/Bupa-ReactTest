@@ -48,10 +48,10 @@ p.info {
 p.warning {
   grid-column: 1 / -1;
   padding: 10px 12px;
-  background: #fef2f2;
-  border-left: 4px solid #dc2626;
+  background: #fff8e1; /* soft amber background */
+  border-left: 4px solid #f59e0b; /* warm amber border */
   border-radius: 4px;
-  color: #b91c1c;
+  color: #b45309; /* darker amber text */
   font-size: 0.9rem;
 }
 
