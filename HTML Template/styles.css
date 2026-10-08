@@ -74,3 +74,28 @@ button {
     system-ui,
     sans-serif;
 }
+
+/* Mobile: stacked cards, centred footer with button above link */
+@media (max-width: 600px) {
+  main {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  section {
+    padding: 8px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 #333;
+  }
+
+  footer {
+    flex-direction: column-reverse;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  button {
+    padding: 10px 56px;
+  }
+}
