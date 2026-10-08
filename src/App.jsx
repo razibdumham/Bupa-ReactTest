@@ -6,7 +6,7 @@ import { useBooks } from "./hooks/useBooks.js";
 
 function App() {
   const [isHardcoverOnly, setIsHardcoverOnly] = useState(false);
-  const { books, loading, error, refetch } = useBooks();
+  const { books, loading, error } = useBooks();
 
   function getBooksOwnedByAdults(data) {
     return (Array.isArray(data) ? data : [])
@@ -27,7 +27,6 @@ function App() {
 
   function handleGetAllBooks() {
     setIsHardcoverOnly(false);
-    refetch();
   }
 
   function handleGetHardcoverBooks() {

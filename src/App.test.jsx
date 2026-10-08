@@ -45,7 +45,6 @@ describe("App", () => {
   });
 
   it("groups books into adult and children sections and filters by hardcover", () => {
-    const refetch = vi.fn();
     vi.mocked(useBooks).mockReturnValue({
       books: [
         {
@@ -65,7 +64,6 @@ describe("App", () => {
       ],
       loading: false,
       error: "",
-      refetch,
     });
 
     render(<App />);
@@ -89,6 +87,5 @@ describe("App", () => {
 
     expect(screen.getByText("Adult Paperback")).toBeInTheDocument();
     expect(screen.getByText("Child Paperback")).toBeInTheDocument();
-    expect(refetch).toHaveBeenCalledOnce();
   });
 });
