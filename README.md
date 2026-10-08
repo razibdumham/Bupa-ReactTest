@@ -6,6 +6,30 @@ A responsive React application that retrieves book owners from the Bupa book API
 
 🚀 **[Owners and Books](https://bupa-react-test.vercel.app/)**
 
+## DESIGN DECISSION (WHY REACT)
+
+Since this project only requires reading an API response and presenting the data in a user interface, a React application is the most suitable choice. React provides a fast, component‑based way to build interactive UIs and handle dynamic data. If the project required authentication, protected routes, or server‑side logic, I would introduce a backend layer using a .NET API or an Azure Function App. But for a purely client‑side data‑driven interface, React offers the simplest and most efficient implementation path.
+
+## Assumptions
+
+- Book data is fetched once when the app loads (or when the page is refreshed). Changing filters does not make another API request.
+- Clicking **Get Books** does not refresh the page. It clears the hardcover filter and shows all books in alphabetical order.
+- API object keys are normalized to lowercase recursively before validation, so keys such as `AGE`, `BOOKS`, `NAME`, and `TYPE` are accepted.
+- Owner records must include a valid `books` array. If the API provides that array under an empty key (`""`) or omits the key, that owner record and its books are skipped.
+
+## API error handling and JSON validation
+
+The API helper in `src/apiData/books.js` handles responses as follows:
+
+- **HTTP 429 (rate limit):** reads the response body and uses its trimmed text as the error message. If the body is blank, it reports `Too many requests.`
+- **Other unsuccessful HTTP responses:** reports `Request failed: <status>`.
+- **Blank response body:** rejects whitespace-only or empty response text with `The books API returned an empty response. Please try again.` The hook passes this error to the app, which displays it in the UI as an alert instead of showing empty book sections.
+- **Invalid JSON:** reports that the API returned invalid JSON. The original parsing error is retained as the cause.
+- **Unexpected JSON shape:** requires the parsed top-level value to be an array; otherwise it reports an unexpected response.
+- **Record validation:** after recursively lowercasing object keys, keeps only owner records that have a numeric `age` and an array under `books`. For each valid owner, it keeps only book objects with string `name` and `type` fields. Invalid records and books are filtered out before rendering. An empty-string key is not accepted as a substitute for `books`, so those owner records are skipped.
+
+The `useBooks` hook passes an `AbortSignal` to the fetch request and aborts it when the component using the hook unmounts, preventing stale request results from updating state.
+
 ## Screenshots
 
 ### Desktop
@@ -73,26 +97,6 @@ npm run test:watch
 ```
 
 The suite uses Vitest, jsdom, and React Testing Library. It covers the app's loading, error, age-grouping, and filter behavior; the `useBooks` hook's request lifecycle and cancellation; the API helper's HTTP handling and JSON validation; and the footer controls.
-
-## Assumptions
-
-- Book data is fetched once when the app loads (or when the page is refreshed). Changing filters does not make another API request.
-- Clicking **Get Books** does not refresh the page. It clears the hardcover filter and shows all books in alphabetical order.
-- API object keys are normalized to lowercase recursively before validation, so keys such as `AGE`, `BOOKS`, `NAME`, and `TYPE` are accepted.
-- Owner records must include a valid `books` array. If the API provides that array under an empty key (`""`) or omits the key, that owner record and its books are skipped.
-
-## API error handling and JSON validation
-
-The API helper in `src/apiData/books.js` handles responses as follows:
-
-- **HTTP 429 (rate limit):** reads the response body and uses its trimmed text as the error message. If the body is blank, it reports `Too many requests.`
-- **Other unsuccessful HTTP responses:** reports `Request failed: <status>`.
-- **Blank response body:** rejects whitespace-only or empty response text with `The books API returned an empty response. Please try again.` The hook passes this error to the app, which displays it in the UI as an alert instead of showing empty book sections.
-- **Invalid JSON:** reports that the API returned invalid JSON. The original parsing error is retained as the cause.
-- **Unexpected JSON shape:** requires the parsed top-level value to be an array; otherwise it reports an unexpected response.
-- **Record validation:** after recursively lowercasing object keys, keeps only owner records that have a numeric `age` and an array under `books`. For each valid owner, it keeps only book objects with string `name` and `type` fields. Invalid records and books are filtered out before rendering. An empty-string key is not accepted as a substitute for `books`, so those owner records are skipped.
-
-The `useBooks` hook passes an `AbortSignal` to the fetch request and aborts it when the component using the hook unmounts, preventing stale request results from updating state.
 
 ## Useful commands
 
