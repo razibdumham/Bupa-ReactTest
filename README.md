@@ -10,7 +10,7 @@ A responsive React application that retrieves book owners from the Bupa book API
 
 - React provides a component-based way to present API data and handle the app's filter and loading states.
 - TypeScript is not used because this is a very small application; JavaScript keeps the implementation straightforward without adding a separate type-checking setup.
-- The API is accessed through the same-origin `/api/v1/bookowners` path, with Vercel rewriting `/api/*` requests to the upstream API.
+- `VITE_BUPA_API_BASE_URL` configures the upstream API origin for Vite's local development proxy. App code requests a same-origin `/api/v1/bookowners` URL, avoiding browser CORS requests to the upstream host.
 
 ## Assumptions
 
@@ -74,11 +74,17 @@ Start the Vite development server:
 npm run dev
 ```
 
-Open the local URL printed by Vite in your browser. The development server proxies `/api` requests to `https://digitalcodingtest.bupa.com.au`.
+Set `VITE_BUPA_API_BASE_URL` in `.env.local` to the API origin, for example:
+
+```dotenv
+VITE_BUPA_API_BASE_URL=https://digitalcodingtest.bupa.com.au
+```
+
+Open the local URL printed by Vite in your browser. Vite proxies the app's `/api/v1/bookowners` request to this upstream origin. If you need to branch client behavior by environment, Vite exposes `import.meta.env.DEV` as `true` during local development and `false` for production builds; the API request itself stays same-origin in both environments.
 
 ## Deploy to Vercel
 
-Import the project repository into Vercel and deploy it with the default Vite settings. Vercel builds the app with `npm run build` and serves the generated `dist` directory. The included `vercel.json` rewrites `/api/*` requests to `https://digitalcodingtest.bupa.com.au/api/*`, so the app's request to `/api/v1/bookowners` is proxied in production as well as during local development.
+Import the project repository into Vercel and deploy it with the default Vite settings. Vercel's `vercel.json` rewrite forwards `/api/*` requests to the upstream API, so the browser continues to use a same-origin URL and avoids CORS. The Vite environment variable is used only by the local development proxy.
 
 To create and preview a production build:
 

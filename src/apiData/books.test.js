@@ -133,7 +133,9 @@ describe("fetchBooks", () => {
     );
     vi.stubGlobal("fetch", fetchMock);
 
-    await expect(fetchBooks()).rejects.toThrow("Try again later");
+    await expect(fetchBooks()).rejects.toThrow(
+      "Rate limit applied. Please retry after 2 seconds",
+    );
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
