@@ -48,6 +48,25 @@ describe("Section", () => {
     ]);
   });
 
+  it("shows duplicate book names only once, ignoring case and surrounding spaces", () => {
+    render(
+      <Section
+        books={[
+          { name: "The Hobbit", type: "Hardcover" },
+          { name: " the hobbit ", type: "Ebook" },
+          { name: "Great Expectations", type: "Paperback" },
+        ]}
+        sectionType="adults"
+        isHardcoverOnly={false}
+      />,
+    );
+
+    expect(screen.getAllByRole("listitem").map((item) => item.textContent)).toEqual([
+      "Great Expectations",
+      "The Hobbit",
+    ]);
+  });
+
   it("shows only hardcover books when that filter is active", () => {
     render(
       <Section

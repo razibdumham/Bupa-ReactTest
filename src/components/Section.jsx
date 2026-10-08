@@ -1,16 +1,32 @@
 export default function Section({ books, sectionType, isHardcoverOnly }) {
-  const visibleBooks = (Array.isArray(books) ? books : [])
-    .filter(
-      (book) =>
-        !isHardcoverOnly ||
-        (typeof book?.type === "string" &&
-          book.type.toLowerCase() === "hardcover"),
-    )
-    .sort((first, second) =>
-      (first?.name ?? "").localeCompare(second?.name ?? "", undefined, {
-        sensitivity: "base",
-      }),
-    );
+  const visibleBooks = [];
+  const seenBookNames = new Set();
+
+  for (const book of Array.isArray(books) ? books : []) {
+    const isHardcover =
+      typeof book?.type === "string" &&
+      book.type.toLowerCase() === "hardcover";
+    if (isHardcoverOnly && !isHardcover) {
+      continue;
+    }
+
+    const normalizedName =
+      typeof book?.name === "string" ? book.name.trim().toLowerCase() : "";
+    if (normalizedName && seenBookNames.has(normalizedName)) {
+      continue;
+    }
+
+    if (normalizedName) {
+      seenBookNames.add(normalizedName);
+    }
+    visibleBooks.push(book);
+  }
+
+  visibleBooks.sort((first, second) =>
+    (first?.name ?? "").localeCompare(second?.name ?? "", undefined, {
+      sensitivity: "base",
+    }),
+  );
 
   const heading = `${isHardcoverOnly && visibleBooks.length > 0 ? "Hardcover " : ""}Books owned by ${
     sectionType === "adults" ? "Adults" : "Children"

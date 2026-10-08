@@ -63,7 +63,10 @@ function App() {
         )}
         {warning && !error && (
           <p className="warning" role="status">
-            {warning}
+            {warning}{" "}
+            <button type="button" onClick={refetch}>
+              Retry
+            </button>
           </p>
         )}
         <Footer
