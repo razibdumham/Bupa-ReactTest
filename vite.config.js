@@ -16,7 +16,8 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target: VITE_BUPA_API_BASE_URL || "https://digitalcodingtest.bup",
+          target:
+            VITE_BUPA_API_BASE_URL || "https://digitalcodingtest.bupa.com.au",
           changeOrigin: true,
         },
       },
