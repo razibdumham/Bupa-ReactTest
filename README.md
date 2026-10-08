@@ -43,6 +43,10 @@ npm run dev
 
 Open the local URL printed by Vite in your browser. The development server proxies `/api` requests to `https://digitalcodingtest.bupa.com.au`.
 
+## Deploy to Vercel
+
+Import the project repository into Vercel and deploy it with the default Vite settings. Vercel builds the app with `npm run build` and serves the generated `dist` directory. The included `vercel.json` rewrites `/api/*` requests to `https://digitalcodingtest.bupa.com.au/api/*`, so the app's existing request to `/api/v1/bookowners` is proxied in production as well as during local development.
+
 To create and preview a production build:
 
 ```bash

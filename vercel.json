@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://digitalcodingtest.bupa.com.au/api/:path*"
+    }
+  ]
+}
