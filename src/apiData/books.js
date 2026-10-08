@@ -21,21 +21,43 @@ export async function fetchBooks(signal) {
     signal,
   });
 
+  if (response.status === 429) {
+    const responseBody = (await response.text()).trim();
+    throw new Error(responseBody || "Too many requests.");
+  }
+
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`);
   }
 
-  const data = await response.json();
+  const responseBody = await response.text();
+
+  if (!responseBody.trim()) {
+    throw new Error(
+      "The books API returned an empty response. Please try again.",
+    );
+  }
+
+  let data;
+  try {
+    data = JSON.parse(responseBody);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new Error(
+        "The books API returned invalid JSON. Please try again.",
+        { cause: error },
+      );
+    }
+
+    throw error;
+  }
 
   if (!Array.isArray(data)) {
     throw new Error("The API returned an unexpected response.");
   }
 
-  const validData = data.filter(isValidPerson);
-
-  validData.forEach((person) => {
-    person.books = person.books.filter(isValidBook);
-  });
-
-  return validData;
+  return data.filter(isValidPerson).map((person) => ({
+    ...person,
+    books: person.books.filter(isValidBook),
+  }));
 }
