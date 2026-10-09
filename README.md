@@ -81,16 +81,16 @@ VITE_BUPA_API_BASE_URL=https://digitalcodingtest.bupa.com.au
 
 Open the local URL printed by Vite in your browser. Vite proxies the app's `/api/v1/bookowners` request to this upstream origin. If you need to branch client behavior by environment, Vite exposes `import.meta.env.DEV` as `true` during local development and `false` for production builds; the API request itself stays same-origin in both environments.
 
-## Before deployment
+## Before production
 
-GitHub Actions runs lint, tests, and a production build on every push and pull request. Before deploying, confirm those checks pass, then build and preview the app locally:
+Before deploying, confirm these checks pass and preview the build locally:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Check that the app loads and retrieves books from `/api/v1/bookowners`. Confirm that the Vercel rewrite in `vercel.json` points to the intended upstream API.
+Open the preview URL and check that the app loads and can retrieve books from `/api/v1/bookowners`. Confirm that the Vercel rewrite in `vercel.json` still points to the intended upstream API.
 
 ## Deploy to Vercel
 
