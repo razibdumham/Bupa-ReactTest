@@ -29,7 +29,7 @@ function App() {
     <>
       <Header />
       <main>
-        {loading && <p>Loading books...</p>}
+        {loading && <p aria-live="polite">Loading books...</p>}
         {error && (
           <p className="alert" role="alert">
             {error}{" "}

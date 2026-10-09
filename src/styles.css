@@ -109,13 +109,10 @@ footer > button.hardcover-filter {
   text-decoration: underline;
 }
 
-footer > button.hardcover-filter:hover {
-  color: #005a96;
-}
-
 footer > button.hardcover-filter[aria-pressed="true"] {
-  color: #666;
+  color: #ffffff;
   text-decoration: underline;
+  background-color: var(--blue);
 }
 
 footer > button.hardcover-filter:focus-visible {
