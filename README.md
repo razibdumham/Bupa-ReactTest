@@ -8,9 +8,8 @@ A responsive React application that retrieves book owners from the Bupa book API
 
 ## Design decisions
 
-- React provides a component-based way to present API data and handle the app's filter and loading states.
+- React was chosen to build the interface from reusable components and manage changing data and UI state, such as loading, errors, and the hardcover filter.
 - TypeScript is not used because this is a very small application; JavaScript keeps the implementation straightforward without adding a separate type-checking setup.
-- `VITE_BUPA_API_BASE_URL` configures the upstream API origin for Vite's local development proxy. App code requests a same-origin `/api/v1/bookowners` URL, avoiding browser CORS requests to the upstream host.
 
 ## Assumptions
 
@@ -82,18 +81,16 @@ VITE_BUPA_API_BASE_URL=https://digitalcodingtest.bupa.com.au
 
 Open the local URL printed by Vite in your browser. Vite proxies the app's `/api/v1/bookowners` request to this upstream origin. If you need to branch client behavior by environment, Vite exposes `import.meta.env.DEV` as `true` during local development and `false` for production builds; the API request itself stays same-origin in both environments.
 
-## Before production
+## Before deployment
 
-Before deploying, verify the project locally:
+GitHub Actions runs lint, tests, and a production build on every push and pull request. Before deploying, confirm those checks pass, then build and preview the app locally:
 
 ```bash
-npm test
-npm run lint
 npm run build
 npm run preview
 ```
 
-Open the preview URL and check that the app loads and can retrieve books from `/api/v1/bookowners`. Confirm that the Vercel rewrite in `vercel.json` still points to the intended upstream API. `VITE_BUPA_API_BASE_URL` is only used by the local Vite proxy; the production API route is configured by the Vercel rewrite.
+Check that the app loads and retrieves books from `/api/v1/bookowners`. Confirm that the Vercel rewrite in `vercel.json` points to the intended upstream API.
 
 ## Deploy to Vercel
 
