@@ -82,16 +82,22 @@ VITE_BUPA_API_BASE_URL=https://digitalcodingtest.bupa.com.au
 
 Open the local URL printed by Vite in your browser. Vite proxies the app's `/api/v1/bookowners` request to this upstream origin. If you need to branch client behavior by environment, Vite exposes `import.meta.env.DEV` as `true` during local development and `false` for production builds; the API request itself stays same-origin in both environments.
 
-## Deploy to Vercel
+## Before production
 
-Import the project repository into Vercel and deploy it with the default Vite settings. Vercel's `vercel.json` rewrite forwards `/api/*` requests to the upstream API, so the browser continues to use a same-origin URL and avoids CORS. The Vite environment variable is used only by the local development proxy.
-
-To create and preview a production build:
+Before deploying, verify the project locally:
 
 ```bash
+npm test
+npm run lint
 npm run build
 npm run preview
 ```
+
+Open the preview URL and check that the app loads and can retrieve books from `/api/v1/bookowners`. Confirm that the Vercel rewrite in `vercel.json` still points to the intended upstream API. `VITE_BUPA_API_BASE_URL` is only used by the local Vite proxy; the production API route is configured by the Vercel rewrite.
+
+## Deploy to Vercel
+
+Import the project repository into Vercel and deploy it with the default Vite settings. Vercel's `vercel.json` rewrite forwards `/api/*` requests to the upstream API, so the browser continues to use a same-origin URL and avoids CORS. The Vite environment variable is used only by the local development proxy.
 
 ## Unit tests
 
